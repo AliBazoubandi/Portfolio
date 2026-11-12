@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ali Bazoubandi — Software Engineer &amp; Data Scientist | Case File Portfolio</title>
+    <meta
+      name="description"
+      content="Interactive case-study folder portfolio of Ali Bazoubandi — Software Engineer and Data Scientist specializing in Python, SQL, PHP, TypeScript, Machine Learning, Data Pipelines, and ERP Integrations."
+    />
+    <meta name="theme-color" content="#0A2FD6" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Ali Bazoubandi — Software Engineer &amp; Data Scientist" />
+    <meta
+      property="og:description"
+      content="Open the case file: interactive portfolio folder covering software engineering, data pipelines, ML research, and projects."
+    />
+    <meta property="og:image" content="/og-cover.svg" />
+    <meta property="og:url" content="https://alibazoubandi.me/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ali Bazoubandi — Software Engineer &amp; Data Scientist" />
+    <meta name="twitter:description" content="Interactive case-study folder portfolio of Ali Bazoubandi." />
+    <meta name="twitter:image" content="/og-cover.svg" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" as="image" href="/assets/photo-halftone.png" />
+
+    <!-- Structured Data (Person) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Ali Bazoubandi",
+        "jobTitle": ["Software Engineer", "Data Scientist"],
+        "url": "https://alibazoubandi.me",
+        "sameAs": [
+          "https://github.com/alibazoubandi",
+          "https://linkedin.com/in/alibazoubandi"
+        ],
+        "knowsAbout": [
+          "Python",
+          "SQL",
+          "PHP",
+          "TypeScript",
+          "Machine Learning",
+          "Data Pipelines",
+          "ERP Integrations",
+          "Three.js"
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <a href="#main-stage" class="skip-link visually-hidden">Skip to portfolio content</a>
+
+    <!-- Top utility bar: Plain version link, sound toggle, progress pill -->
+    <header class="top-chrome" aria-label="Portfolio controls">
+      <div class="top-chrome-left">
+        <button
+          id="plain-toggle-btn"
+          type="button"
+          class="chrome-pill"
+          aria-pressed="false"
+        >
+          <span class="pill-dot" aria-hidden="true"></span>
+          <span class="pill-label">SKIP TO PLAIN VERSION</span>
+        </button>
+      </div>
+      <div class="top-chrome-right">
+        <button
+          id="sound-toggle-btn"
+          type="button"
+          class="chrome-pill"
+          aria-pressed="false"
+          aria-label="Toggle paper and stamp sound effects"
+        >
+          <span class="sound-icon" aria-hidden="true">🔇</span>
+          <span class="sound-label">SOUND: OFF</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Lightweight on-theme loader shown only if init takes > 800ms -->
+    <div id="folder-loader" class="folder-loader" hidden aria-live="polite">
+      <div class="loader-tab">
+        <span class="loader-label">OPENING CASE FILE...</span>
+        <div class="loader-track"><div class="loader-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Main Interactive Folder Stage -->
+    <main id="main-stage" tabindex="-1">
+      <div id="scroll-track" class="scroll-track">
+        <div id="pinned-stage" class="pinned-stage">
+          <!-- Lighter blue tilted background card matching reference -->
+          <div class="backdrop-card" aria-hidden="true"></div>
+
+          <!-- 3D Folder Assembly -->
+          <div id="folder-root" class="folder-root">
+            <!-- Back cover -->
+            <div class="folder-back" aria-hidden="true"></div>
+
+            <!-- Physical paper grip clamping the top of the page stack -->
+            <div id="page-top-grip" class="page-top-grip" aria-hidden="true"></div>
+
+            <!-- Top-bound page stack + attached divider index tabs -->
+            <div id="page-stack" class="page-stack">
+              <nav id="folder-index-tabs" class="folder-index-tabs" aria-label="Folder page index"></nav>
+            </div>
+
+            <!-- Front cover hinged on the left spine -->
+            <div id="folder-cover-hinge" class="folder-cover-hinge">
+              <section id="cover-front" class="cover-face cover-front" aria-label="Portfolio Cover"></section>
+              <div id="cover-inside" class="cover-face cover-inside" aria-hidden="true"></div>
+            </div>
+
+            <!-- Final "CASE CLOSED" stamp overlay + physical hand stamper -->
+            <div id="case-closed-overlay" class="case-closed-overlay" aria-hidden="true">
+              <div class="stamp-target">
+                <div class="stamp-closed" id="stamp-closed">CASE CLOSED</div>
+                <div class="hand-stamper" id="hand-stamper" aria-hidden="true"></div>
+              </div>
+              <div class="closed-actions" id="closed-actions">
+                <button type="button" id="back-to-top-btn" class="paper-action-btn">
+                  ↑ REPLAY / BACK TO TOP
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Scroll hint on load -->
+          <div id="scroll-hint" class="scroll-hint" aria-hidden="true">
+            <span class="scroll-hint-text">SCROLL TO OPEN</span>
+            <span class="scroll-hint-arrow">↓</span>
+          </div>
+
+          <!-- Easter egg / toast stamp banner -->
+          <div id="toast-stamp" class="toast-stamp" role="status" aria-live="polite" hidden></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Plain accessible view container (toggled via button or ?view=plain) -->
+    <div id="plain-root" class="plain-root" hidden></div>
+
+    <!-- Full semantic fallback when JavaScript is disabled -->
+    <noscript>
+      <div class="noscript-plain">
+        <header>
+          <p><strong>CASE FILE #01 // AVAILABLE FOR WORK</strong></p>
+          <h1>Ali Bazoubandi</h1>
+          <p>Software Engineer &amp; Data Scientist · Age 25 · Iran</p>
+          <p>
+            <a href="/assets/Ali-Bazoubandi-CV.pdf" download>Download CV (PDF)</a> ·
+            <a href="mailto:hello@alibazoubandi.me">hello@alibazoubandi.me</a> ·
+            <a href="https://github.com/alibazoubandi">GitHub</a> ·
+            <a href="https://linkedin.com/in/alibazoubandi">LinkedIn</a>
+          </p>
+        </header>
+        <section>
+          <h2>About Me</h2>
+          <p>
+            Software engineer and data scientist building production backends, ERP integrations,
+            and applied machine learning pipelines. Focused on turning messy operational data into
+            reliable, observable software.
+          </p>
+        </section>
+        <section>
+          <h2>Core Stack</h2>
+          <ul>
+            <li>Languages: Python, SQL, PHP, JavaScript / TypeScript</li>
+            <li>Data &amp; ML: Machine Learning, Data Pipelines, PyTorch, scikit-learn, dbt</li>
+            <li>Integrations &amp; Frontend: ERP Integrations, REST/Webhooks, Three.js / WebGL</li>
+          </ul>
+        </section>
+        <section>
+          <h2>Notice</h2>
+          <p>JavaScript is disabled, so you are viewing the accessible plain version of this portfolio.</p>
+        </section>
+      </div>
+    </noscript>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
+
