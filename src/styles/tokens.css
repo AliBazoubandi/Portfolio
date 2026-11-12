@@ -1,0 +1,107 @@
+:root {
+  /* Palette sampled from the reference case-study folder */
+  --bg-royal: #0A2FD6;
+  --bg-backdrop-blue: #5876EC;
+  --folder-beige: #E3D7C1;
+  --folder-beige-dark: #D7C8AC;
+  --folder-spine: #C9B994;
+  --folder-inside: #EDE3CF;
+  --paper-light: #F3F0E8;
+  --paper-white: #FAF8F2;
+
+  /* Ink & Semantic Accents (WCAG AA checked against folder & paper surfaces) */
+  --ink: #232323;
+  --ink-muted: #595348;
+  --ink-rule: #9B9383;
+  --accent-blue: #1535B8;
+  --stamp-green: #186B32;
+  --stamp-red: #B91C1C;
+  --highlight-yellow: #FFD13B;
+
+  /* Typography */
+  --font-sans: 'Jost', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-stamp: 'Special Elite', 'Courier New', Courier, monospace;
+
+  /* Hard offset shadows (no blurry glow) */
+  --shadow-folder: 8px 10px 0px rgba(10, 18, 58, 0.42);
+  --shadow-card: 3px 4px 0px rgba(35, 35, 35, 0.16);
+  --shadow-polaroid: 4px 5px 0px rgba(35, 35, 35, 0.25);
+  --shadow-pill: 3px 3px 0px #151B42;
+
+  /* Radii & Borders */
+  --border-ink: 1.5px solid #222222;
+  --border-thick: 2px solid #222222;
+  --folder-radius: 14px;
+  --card-radius: 11px;
+
+  /* Folder geometry */
+  --folder-w: min(610px, 90vw);
+  --folder-h: min(770px, 86dvh);
+  --spine-w: clamp(32px, 4.8vw, 44px);
+
+  /* Paper grain SVG data URI */
+  --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: var(--bg-royal);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background-color: var(--bg-royal);
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.06) 0%, transparent 48%),
+    radial-gradient(circle at 85% 80%, rgba(0, 0, 0, 0.16) 0%, transparent 55%);
+  overflow-x: clip;
+}
+
+/* Accessible visually hidden helper */
+.visually-hidden:where(:not(:focus-within, :active)) {
+  position: absolute !important;
+  clip-path: inset(50%) !important;
+  overflow: hidden !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  white-space: nowrap !important;
+}
+
+.skip-link:focus {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 9999;
+  padding: 10px 16px;
+  background: var(--highlight-yellow);
+  color: #111111;
+  font-weight: 700;
+  border: var(--border-thick);
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+:where(a:any-link, button, input, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--highlight-yellow);
+  outline-offset: 3px;
+}
+
+/* On light paper backgrounds use high-contrast royal blue focus ring */
+:where(.folder-root, .plain-root) :where(a:any-link, button, input, textarea):focus-visible {
+  outline: 3px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
