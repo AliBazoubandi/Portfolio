@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 — File Not Found | Ali Bazoubandi</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style>
+      :root {
+        --bg-royal: #0a2fd6;
+        --bg-backdrop-blue: #5876ec;
+        --folder-beige: #e3d7c1;
+        --folder-spine: #c9b994;
+        --paper-light: #f3f0e8;
+        --ink: #232323;
+        --stamp-red: #b91c1c;
+        --highlight-yellow: #ffd13b;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 20px;
+        background: var(--bg-royal);
+        color: var(--ink);
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      }
+      .stack { position: relative; width: min(500px, 92vw); }
+      .back-sheet {
+        position: absolute;
+        inset: 0;
+        border-radius: 14px;
+        background: var(--bg-backdrop-blue);
+        border: 2px solid #1c203b;
+        transform: rotate(2.4deg) translate(8px, 5px);
+      }
+      .folder {
+        position: relative;
+        display: grid;
+        grid-template-columns: 36px 1fr;
+        background: var(--folder-beige);
+        border: 2px solid #222;
+        border-radius: 14px;
+        box-shadow: 8px 10px 0 rgba(10, 18, 58, 0.42);
+        transform: rotate(-1.2deg);
+        overflow: hidden;
+      }
+      .spine {
+        background: var(--folder-spine);
+        border-right: 1.5px solid #222;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        color: #595348;
+      }
+      .content {
+        padding: 28px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .stamp {
+        align-self: flex-start;
+        padding: 6px 14px;
+        border: 3px solid var(--stamp-red);
+        border-radius: 8px;
+        color: var(--stamp-red);
+        font-family: 'Courier New', monospace;
+        font-weight: 700;
+        font-size: 1.15rem;
+        letter-spacing: 0.08em;
+        transform: rotate(-5deg);
+      }
+      h1 { margin: 0; font-size: 1.65rem; }
+      .note {
+        background: var(--paper-light);
+        border: 1.5px solid #222;
+        border-radius: 10px;
+        padding: 14px 16px;
+        line-height: 1.5;
+        font-size: 0.95rem;
+      }
+      .btn {
+        align-self: flex-start;
+        display: inline-block;
+        padding: 10px 18px;
+        border: 2px solid #222;
+        border-radius: 7px;
+        background: var(--highlight-yellow);
+        color: #111;
+        font-weight: 700;
+        text-decoration: none;
+        box-shadow: 3px 3px 0 #222;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="stack">
+      <div class="back-sheet" aria-hidden="true"></div>
+      <section class="folder" aria-labelledby="missing-heading">
+        <div class="spine" aria-hidden="true">CASE FILE // 404</div>
+        <div class="content">
+          <div class="stamp">FILE NOT FOUND</div>
+          <h1 id="missing-heading">Error 404 — Missing Record</h1>
+          <div class="note">
+            The requested record is not in Ali Bazoubandi's archive. It may have been moved,
+            refiled, or never existed.
+          </div>
+          <a class="btn" href="/">← RETURN TO CASE FILE #01</a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
+
