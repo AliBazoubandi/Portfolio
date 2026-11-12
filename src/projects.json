@@ -1,0 +1,53 @@
+[
+  {
+    "id": "erp-sync-engine",
+    "name": "ERP Sync Engine",
+    "client": "Operations / TODO: Client",
+    "type": "DATA PIPELINE",
+    "tech": ["Python", "PostgreSQL", "PHP", "Redis"],
+    "description": "Idempotent two-way connector reconciling invoices, stock levels, and ledger entries across ERP instances.",
+    "year": "2026",
+    "url": "https://github.com/alibazoubandi"
+  },
+  {
+    "id": "anomaly-pipeline-ml",
+    "name": "StreamGuard ML",
+    "client": "Research / Applied ML",
+    "type": "MACHINE LEARNING",
+    "tech": ["Python", "PyTorch", "scikit-learn", "FastAPI"],
+    "description": "Near-real-time anomaly scoring service for irregular multi-tenant transactional event logs.",
+    "year": "2025",
+    "url": "https://github.com/alibazoubandi"
+  },
+  {
+    "id": "telemetry-warehouse",
+    "name": "MetricVault Warehouse",
+    "client": "Internal Analytics",
+    "type": "DATA ENGINEERING",
+    "tech": ["SQL", "dbt", "Airflow", "Docker"],
+    "description": "Modular dimensional warehouse transforming raw webhook payloads into daily KPI marts.",
+    "year": "2025",
+    "url": "https://github.com/alibazoubandi"
+  },
+  {
+    "id": "shader-field-notes",
+    "name": "Spatial Data Atlas",
+    "client": "Interactive R&D",
+    "type": "3D / WEBGL",
+    "tech": ["TypeScript", "Three.js", "WebGL"],
+    "description": "GPU-instanced 3D scatter and cluster explorer rendering 100k+ embeddings smoothly in the browser.",
+    "year": "2024",
+    "url": "https://github.com/alibazoubandi"
+  },
+  {
+    "id": "sql-lineage-tracer",
+    "name": "SQL Lineage Tracer",
+    "client": "Open Source Tool",
+    "type": "DEV TOOLING",
+    "tech": ["TypeScript", "Python", "AST"],
+    "description": "Static column-level lineage parser mapping upstream tables to downstream BI views.",
+    "year": "2024",
+    "url": "https://github.com/alibazoubandi"
+  }
+]
+
