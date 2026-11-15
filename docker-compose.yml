@@ -1,0 +1,10 @@
+services:
+  portfolio:
+    build:
+      context: .
+      args:
+        VITE_CONTACT_ENDPOINT: ${VITE_CONTACT_ENDPOINT:-}
+    image: portfolio:latest
+    ports:
+      - '8081:80'
+    restart: unless-stopped
