@@ -1,0 +1,6 @@
+dist
+node_modules
+package-lock.json
+public/assets
+# Hand-tuned: contains the CSP sha256 hash of the inline JSON-LD block.
+index.html

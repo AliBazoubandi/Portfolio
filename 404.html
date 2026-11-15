@@ -16,7 +16,9 @@
         --stamp-red: #b91c1c;
         --highlight-yellow: #ffd13b;
       }
-      * { box-sizing: border-box; }
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
         min-height: 100dvh;
@@ -25,9 +27,16 @@
         padding: 20px;
         background: var(--bg-royal);
         color: var(--ink);
-        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        font-family:
+          system-ui,
+          -apple-system,
+          'Segoe UI',
+          sans-serif;
       }
-      .stack { position: relative; width: min(500px, 92vw); }
+      .stack {
+        position: relative;
+        width: min(500px, 92vw);
+      }
       .back-sheet {
         position: absolute;
         inset: 0;
@@ -78,7 +87,10 @@
         letter-spacing: 0.08em;
         transform: rotate(-5deg);
       }
-      h1 { margin: 0; font-size: 1.65rem; }
+      h1 {
+        margin: 0;
+        font-size: 1.65rem;
+      }
       .note {
         background: var(--paper-light);
         border: 1.5px solid #222;
@@ -119,4 +131,3 @@
     </main>
   </body>
 </html>
-

@@ -9,6 +9,10 @@
       content="Interactive case-study folder portfolio of Ali Bazoubandi — Software Engineer and Data Scientist specializing in Python, SQL, PHP, TypeScript, Machine Learning, Data Pipelines, and ERP Integrations."
     />
     <meta name="theme-color" content="#0A2FD6" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'sha256-xI8X9q+pePvdJKezo/cXk+m72rGXQxDOrVdnRfx7o7Y='; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' ws: https://api.github.com https:; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:"
+    />
 
     <!-- Open Graph / Twitter -->
     <meta property="og:type" content="website" />
@@ -17,13 +21,17 @@
       property="og:description"
       content="Open the case file: interactive portfolio folder covering software engineering, data pipelines, ML research, and projects."
     />
-    <meta property="og:image" content="/og-cover.svg" />
+    <meta property="og:image" content="https://alibazoubandi.me/og-cover.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:url" content="https://alibazoubandi.me/" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Ali Bazoubandi — Software Engineer &amp; Data Scientist" />
     <meta name="twitter:description" content="Interactive case-study folder portfolio of Ali Bazoubandi." />
-    <meta name="twitter:image" content="/og-cover.svg" />
+    <meta name="twitter:image" content="https://alibazoubandi.me/og-cover.png" />
 
+    <link rel="canonical" href="https://alibazoubandi.me/" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preload" as="image" href="/assets/photo-halftone.png" />
 
@@ -119,6 +127,7 @@
             <!-- Final "CASE CLOSED" stamp overlay + physical hand stamper -->
             <div id="case-closed-overlay" class="case-closed-overlay" aria-hidden="true">
               <div class="stamp-target">
+                <div class="stamp-impact" id="stamp-impact" aria-hidden="true"></div>
                 <div class="stamp-closed" id="stamp-closed">CASE CLOSED</div>
                 <div class="hand-stamper" id="hand-stamper" aria-hidden="true"></div>
               </div>

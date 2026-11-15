@@ -55,6 +55,11 @@ class SoundEngine {
     return this.enabled && !this.isReducedMotion();
   }
 
+  /** True when the OS reduced-motion preference silences all sound. */
+  public isBlockedByReducedMotion(): boolean {
+    return this.isReducedMotion();
+  }
+
   public toggle(): boolean {
     this.enabled = !this.enabled;
     try {

@@ -12,7 +12,7 @@ import gsap from 'gsap';
 import { CONFIG } from './config';
 import { soundEngine } from './audio';
 import { loadProjects } from './github';
-import { initInteractions } from './interactions';
+import { initInteractions, showStampToast } from './interactions';
 import { renderCover } from './pages/cover';
 import { renderAboutPage } from './pages/about';
 import { renderExperiencePage } from './pages/experience';
@@ -29,16 +29,52 @@ async function bootstrap(): Promise<void> {
     if (loaderEl) loaderEl.hidden = false;
   }, CONFIG.loaderDelayMs);
 
+  try {
+    await initPortfolio();
+  } catch (err) {
+    console.error('[portfolio] Failed to open case file:', err);
+    renderBootstrapError();
+  } finally {
+    window.clearTimeout(loaderTimer);
+    if (loaderEl) loaderEl.hidden = true;
+  }
+}
+
+function renderBootstrapError(): void {
+  if (document.getElementById('bootstrap-error')) return;
+  const overlay = document.createElement('div');
+  overlay.id = 'bootstrap-error';
+  overlay.className = 'bootstrap-error';
+  overlay.setAttribute('role', 'alert');
+
+  const tab = document.createElement('div');
+  tab.className = 'loader-tab';
+  const label = document.createElement('span');
+  label.className = 'loader-label';
+  label.textContent = 'CASE FILE FAILED TO OPEN';
+  const note = document.createElement('p');
+  note.className = 'bootstrap-error-note';
+  note.textContent = 'An unexpected error interrupted the dossier. Reload to retry.';
+  const retry = document.createElement('button');
+  retry.type = 'button';
+  retry.className = 'paper-action-btn';
+  retry.textContent = 'RELOAD CASE FILE';
+  retry.addEventListener('click', () => window.location.reload());
+  tab.append(label, note, retry);
+  overlay.appendChild(tab);
+  document.body.appendChild(overlay);
+}
+
+async function initPortfolio(): Promise<void> {
   const coverFront = document.getElementById('cover-front');
   const coverInside = document.getElementById('cover-inside');
   const folderRoot = document.getElementById('folder-root');
   const mainStage = document.getElementById('main-stage');
   const plainRoot = document.getElementById('plain-root');
   const plainToggleBtn = document.getElementById('plain-toggle-btn');
-  const soundToggleBtn = document.getElementById('sound-toggle-btn');
+  const soundToggleBtn = document.getElementById('sound-toggle-btn') as HTMLButtonElement | null;
 
   if (!coverFront || !coverInside || !folderRoot || !mainStage || !plainRoot) {
-    window.clearTimeout(loaderTimer);
     return;
   }
 
@@ -73,15 +109,28 @@ async function bootstrap(): Promise<void> {
   // 5. Sound Toggle UI
   const updateSoundButton = (enabled: boolean) => {
     if (!soundToggleBtn) return;
+    const blocked = soundEngine.isBlockedByReducedMotion();
     soundToggleBtn.setAttribute('aria-pressed', String(enabled));
+    soundToggleBtn.setAttribute('aria-disabled', String(blocked));
+    soundToggleBtn.disabled = blocked;
     const icon = soundToggleBtn.querySelector('.sound-icon');
     const label = soundToggleBtn.querySelector('.sound-label');
-    if (icon) icon.textContent = enabled ? '🔊' : '🔇';
-    if (label) label.textContent = enabled ? 'SOUND: ON' : 'SOUND: OFF';
+    if (icon) icon.textContent = enabled && !blocked ? '🔊' : '🔇';
+    if (label) {
+      label.textContent = blocked
+        ? 'SOUND: N/A (REDUCED MOTION)'
+        : enabled
+          ? 'SOUND: ON'
+          : 'SOUND: OFF';
+    }
   };
   updateSoundButton(soundEngine.isEnabled());
 
   soundToggleBtn?.addEventListener('click', () => {
+    if (soundEngine.isBlockedByReducedMotion()) {
+      showStampToast('SOUND UNAVAILABLE: REDUCED MOTION PREFERRED');
+      return;
+    }
     const nowOn = soundEngine.toggle();
     updateSoundButton(nowOn);
   });
@@ -109,6 +158,7 @@ async function bootstrap(): Promise<void> {
     const url = new URL(window.location.href);
     if (enabled) url.searchParams.set('view', 'plain');
     else url.searchParams.delete('view');
+    if (!enabled && url.hash === '#plain') url.hash = '';
     window.history.replaceState({}, '', url.toString());
   };
 
@@ -122,12 +172,10 @@ async function bootstrap(): Promise<void> {
   if (window.scrollY < 40 && !plainMode) {
     runCoverEntrance(folderRoot, coverFront);
   } else {
-    coverFront.querySelectorAll<HTMLElement>('.cb-row.is-pending').forEach((el) => el.classList.remove('is-pending'));
+    coverFront
+      .querySelectorAll<HTMLElement>('.cb-row.is-pending')
+      .forEach((el) => el.classList.remove('is-pending'));
   }
-
-  // Dismiss loader if shown
-  window.clearTimeout(loaderTimer);
-  if (loaderEl) loaderEl.hidden = true;
 }
 
 function runCoverEntrance(folderRoot: HTMLElement, coverFront: HTMLElement): void {

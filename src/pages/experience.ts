@@ -1,14 +1,15 @@
 import { CONTENT, TimelineEntry } from '../content';
+import { esc } from '../escape';
 
 function renderEntry(entry: TimelineEntry): string {
-  const bullets = entry.bullets.map((b) => `<li>${b}</li>`).join('');
+  const bullets = entry.bullets.map((b) => `<li>${esc(b)}</li>`).join('');
   return `
     <article class="timeline-card">
       <div class="timeline-card-top">
-        <h4 class="timeline-role">${entry.title}</h4>
-        <span class="timeline-dates">${entry.dates}</span>
+        <h4 class="timeline-role">${esc(entry.title)}</h4>
+        <span class="timeline-dates">${esc(entry.dates)}</span>
       </div>
-      <p class="timeline-org">${entry.organization}${entry.location ? ` · ${entry.location}` : ''}</p>
+      <p class="timeline-org">${esc(entry.organization)}${entry.location ? ` · ${esc(entry.location)}` : ''}</p>
       <ul class="timeline-bullets">${bullets}</ul>
     </article>
   `;
@@ -35,4 +36,3 @@ export function renderExperiencePage(): string {
     </section>
   `;
 }
-

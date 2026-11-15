@@ -1,29 +1,30 @@
 import { ProjectItem } from '../github';
+import { esc } from '../escape';
 
 function renderProjectCard(project: ProjectItem): string {
   const chips = project.tech
     .slice(0, 5)
-    .map((t) => `<span class="tech-chip">${t}</span>`)
+    .map((t) => `<span class="tech-chip">${esc(t)}</span>`)
     .join('');
 
   return `
     <article class="project-card">
       <div class="project-card-top">
-        <span class="project-type-tag">${project.type}</span>
-        <span class="project-year">${project.year}${project.stars ? ` · ★ ${project.stars}` : ''}</span>
+        <span class="project-type-tag">${esc(project.type)}</span>
+        <span class="project-year">${esc(project.year)}${project.stars ? ` · ★ ${esc(project.stars)}` : ''}</span>
       </div>
-      <h3 class="project-name">${project.name}</h3>
-      <p class="project-client">${project.client}</p>
-      <p class="project-desc">${project.description}</p>
+      <h3 class="project-name">${esc(project.name)}</h3>
+      <p class="project-client">${esc(project.client)}</p>
+      <p class="project-desc">${esc(project.description)}</p>
       <div class="project-card-footer">
         <div class="tech-chips">${chips}</div>
         <a
-          href="${project.url}"
+          href="${esc(project.url)}"
           target="_blank"
           rel="noopener noreferrer"
           class="project-link-btn"
         >
-          OPEN FILE ↗ <span class="visually-hidden">${project.name}</span>
+          OPEN FILE ↗ <span class="visually-hidden">${esc(project.name)}</span>
         </a>
       </div>
     </article>
@@ -76,4 +77,3 @@ export function renderProjectPages(projects: ProjectItem[]): { title: string; ht
 
   return pages;
 }
-

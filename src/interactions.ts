@@ -1,6 +1,7 @@
 import gsap from 'gsap';
 import { soundEngine } from './audio';
 import { CONTENT } from './content';
+import { esc } from './escape';
 
 let toastTimer: number | undefined;
 
@@ -36,41 +37,63 @@ function initParallax(): void {
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefersReduced) return;
 
-  const layers = document.querySelectorAll<HTMLElement>('[data-parallax]');
+  const layers = Array.from(document.querySelectorAll<HTMLElement>('[data-parallax]'));
   if (!layers.length) return;
 
-  const moveLayers = (nx: number, ny: number) => {
-    layers.forEach((el) => {
-      const depth = Number(el.dataset.parallax || 0.4);
-      gsap.to(el, {
-        x: nx * 6 * depth,
-        y: ny * 5 * depth,
-        duration: 0.45,
-        ease: 'power2.out',
-        overwrite: 'auto',
-      });
-    });
+  // One reusable tween per axis per layer. quickTo mutates a single tween's target
+  // instead of allocating a fresh tween on every pointer event, so a high-polling
+  // mouse can no longer flood the shared GSAP ticker (Lenis + ScrollTrigger) and
+  // drop frames — which is what made the cover layers visibly jitter.
+  const setters = layers.map((el) => {
+    const depth = Number(el.dataset.parallax || 0.4);
+    return {
+      depth,
+      x: gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3.out', force3D: true }),
+      y: gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3.out', force3D: true }),
+    };
+  });
+
+  const cover = document.getElementById('cover-front');
+  let targetX = 0;
+  let targetY = 0;
+  let rafId = 0;
+
+  const apply = () => {
+    rafId = 0;
+    // The choreography marks the cover inert once it scrolls out of view; there is
+    // nothing to parallax then, so skip the work entirely.
+    if (cover?.inert) return;
+    for (const s of setters) {
+      s.x(targetX * 6 * s.depth);
+      s.y(targetY * 5 * s.depth);
+    }
+  };
+
+  // Coalesce bursts of pointer events into a single update per animation frame.
+  const schedule = () => {
+    if (!rafId) rafId = window.requestAnimationFrame(apply);
   };
 
   window.addEventListener(
     'pointermove',
     (e) => {
       if (e.pointerType === 'touch') return;
-      const nx = (e.clientX / window.innerWidth - 0.5) * 2;
-      const ny = (e.clientY / window.innerHeight - 0.5) * 2;
-      moveLayers(nx, ny);
+      targetX = (e.clientX / window.innerWidth - 0.5) * 2;
+      targetY = (e.clientY / window.innerHeight - 0.5) * 2;
+      schedule();
     },
     { passive: true }
   );
 
-  if (window.DeviceOrientationEvent) {
+  // Device tilt is only used on touch devices so it never fights the mouse pointer.
+  if (window.matchMedia('(pointer: coarse)').matches && window.DeviceOrientationEvent) {
     window.addEventListener(
       'deviceorientation',
       (e) => {
         if (e.gamma === null || e.beta === null) return;
-        const nx = Math.max(-1, Math.min(1, e.gamma / 25));
-        const ny = Math.max(-1, Math.min(1, (e.beta - 45) / 25));
-        moveLayers(nx, ny);
+        targetX = Math.max(-1, Math.min(1, e.gamma / 25));
+        targetY = Math.max(-1, Math.min(1, (e.beta - 45) / 25));
+        schedule();
       },
       { passive: true }
     );
@@ -167,7 +190,11 @@ function initContactForm(): void {
 
   const statusEl = document.getElementById('contact-form-status');
   const submitBtn = document.getElementById('contact-submit-btn') as HTMLButtonElement | null;
-  const fields = Array.from(form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input[required], textarea[required]'));
+  const fields = Array.from(
+    form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+      'input[required], textarea[required]'
+    )
+  );
 
   // Accessible validation sync (:user-invalid + aria-invalid + aria-describedby + polite live region)
   const linkError = (el: HTMLElement, shown: boolean) => {
@@ -226,7 +253,7 @@ function initContactForm(): void {
       const subject = encodeURIComponent(`Portfolio Case Inquiry from ${name}`);
       const body = encodeURIComponent(`${message}\n\n— ${name} (${formData.get('email')})`);
       if (statusEl) {
-        statusEl.innerHTML = `<span class="sent-stamp">READY VIA EMAIL</span> <a href="mailto:${CONTENT.contact.email}?subject=${subject}&body=${body}">Open Mail App ↗</a>`;
+        statusEl.innerHTML = `<span class="sent-stamp">READY VIA EMAIL</span> <a href="${esc(`mailto:${CONTENT.contact.email}?subject=${subject}&body=${body}`)}">Open Mail App ↗</a>`;
       }
       soundEngine.playStampSlam();
       return;
@@ -254,11 +281,11 @@ function initContactForm(): void {
         linkError(f, false);
       });
       if (statusEl) {
-        statusEl.innerHTML = `<span class="sent-stamp">SENT</span> Dispatch delivered to ${CONTENT.firstName}.`;
+        statusEl.innerHTML = `<span class="sent-stamp">SENT</span> Dispatch delivered to ${esc(CONTENT.firstName)}.`;
       }
     } catch {
       if (statusEl) {
-        statusEl.innerHTML = `Could not reach endpoint. <a href="mailto:${CONTENT.contact.email}">Send via email instead ↗</a>`;
+        statusEl.innerHTML = `Could not reach endpoint. <a href="${esc(`mailto:${CONTENT.contact.email}`)}">Send via email instead ↗</a>`;
       }
     } finally {
       if (submitBtn) {
@@ -268,4 +295,3 @@ function initContactForm(): void {
     }
   });
 }
-

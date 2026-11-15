@@ -83,4 +83,3 @@ export const CONFIG: TimelineConfig = {
   },
   loaderDelayMs: 800,
 };
-

@@ -25,7 +25,7 @@
   gap: 8px;
   min-block-size: 36px;
   padding: 6px 13px;
-  border: 1.5px solid #151B42;
+  border: 1.5px solid #151b42;
   border-radius: 999px;
   background: var(--paper-light);
   color: var(--ink);
@@ -36,7 +36,9 @@
   text-transform: uppercase;
   cursor: pointer;
   box-shadow: var(--shadow-pill);
-  transition: transform 0.14s ease, background-color 0.14s ease;
+  transition:
+    transform 0.14s ease,
+    background-color 0.14s ease;
 }
 
 .chrome-pill:hover {
@@ -46,7 +48,7 @@
 
 .chrome-pill:active {
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px #151B42;
+  box-shadow: 1px 1px 0px #151b42;
 }
 
 .pill-dot {
@@ -103,8 +105,30 @@
 }
 
 @keyframes loaderSweep {
-  from { transform: translateX(-30%); }
-  to { transform: translateX(65%); }
+  from {
+    transform: translateX(-30%);
+  }
+  to {
+    transform: translateX(65%);
+  }
+}
+
+/* Bootstrap failure overlay (on-theme) */
+.bootstrap-error {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(10, 47, 214, 0.94);
+}
+
+.bootstrap-error-note {
+  margin: 0 0 12px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--ink);
 }
 
 /* Main Pinned Stage */
@@ -133,7 +157,7 @@
   height: var(--folder-h);
   border-radius: var(--folder-radius);
   background: var(--bg-backdrop-blue);
-  border: 1.8px solid #1C203B;
+  border: 1.8px solid #1c203b;
   transform: rotate(2.1deg) translate(8px, 4px);
   pointer-events: none;
   z-index: 1;
@@ -205,11 +229,13 @@
   text-transform: uppercase;
   cursor: pointer;
   box-shadow: 3px 3px 0px rgba(10, 18, 58, 0.32);
-  transition: transform 0.16s ease, background-color 0.16s ease;
+  transition:
+    transform 0.16s ease,
+    background-color 0.16s ease;
 }
 
 .index-tab-btn:nth-child(even) {
-  background: #D5C6A7;
+  background: #d5c6a7;
 }
 
 .index-tab-btn:hover {
@@ -251,12 +277,13 @@
   border-radius: 6px 10px 10px 6px;
   background: var(--paper-light);
   background-image:
-    var(--paper-grain),
-    linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0px, transparent 18px);
+    var(--paper-grain), linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0px, transparent 18px);
   border: var(--border-ink);
   box-shadow: 2px 4px 0px rgba(0, 0, 0, 0.12);
+  /* auto (not contain) so wheel chains out to the page scroller at the edges;
+     inner scrolling is gated to true overflow by the wheel handler in timeline.ts */
   overflow-y: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior: auto;
   pointer-events: none;
   padding-top: 10px;
 }
@@ -308,8 +335,7 @@
 .cover-front {
   background: var(--folder-beige);
   background-image:
-    var(--paper-grain),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.08) 0px, transparent 14px);
+    var(--paper-grain), linear-gradient(90deg, rgba(0, 0, 0, 0.08) 0px, transparent 14px);
   border: var(--border-ink);
   display: grid;
   grid-template-columns: var(--spine-w) 1fr;
@@ -344,8 +370,7 @@
   transform: rotateY(180deg);
   background: var(--folder-inside);
   background-image:
-    var(--paper-grain),
-    linear-gradient(270deg, rgba(0, 0, 0, 0.08) 0px, transparent 22px);
+    var(--paper-grain), linear-gradient(270deg, rgba(0, 0, 0, 0.08) 0px, transparent 22px);
   border: var(--border-ink);
   display: flex;
   flex-direction: column;
@@ -393,6 +418,23 @@
   place-items: center;
 }
 
+/* Soft ink-pressure bloom that expands behind the impression at the moment of impact. */
+.stamp-impact {
+  grid-area: 1 / 1;
+  width: clamp(200px, 34vw, 340px);
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(185, 28, 28, 0.3) 0%,
+    rgba(185, 28, 28, 0.12) 45%,
+    rgba(185, 28, 28, 0) 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
 .stamp-closed {
   grid-area: 1 / 1;
   padding: 12px 26px;
@@ -409,6 +451,7 @@
   transform: rotate(-11deg);
   opacity: 0;
   box-shadow: 4px 5px 0 rgba(185, 28, 28, 0.22);
+  will-change: transform, opacity;
 }
 
 .hand-stamper {
@@ -421,6 +464,7 @@
   pointer-events: none;
   z-index: 2;
   filter: drop-shadow(6px 10px 0 rgba(10, 18, 58, 0.34));
+  will-change: transform, opacity;
 }
 
 .hand-stamper-svg {
@@ -443,7 +487,9 @@
   opacity: 1;
   transform: translateX(-50%) translateY(0);
   pointer-events: auto;
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 
 /* Scroll Hint */
@@ -459,7 +505,7 @@
   padding: 6px 14px;
   border-radius: 999px;
   background: rgba(15, 23, 66, 0.82);
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -479,8 +525,13 @@
 }
 
 @keyframes hintBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(4px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
 }
 
 /* Toast Stamp */
@@ -538,4 +589,3 @@
     inset: 10px 10px 10px calc(var(--spine-w) + 6px);
   }
 }
-

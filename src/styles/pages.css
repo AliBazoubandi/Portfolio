@@ -38,16 +38,34 @@
 
 .badge-btn {
   justify-self: center;
+  display: grid;
+  place-items: center;
   background: transparent;
   border: none;
   padding: 0;
+  line-height: 0;
   cursor: pointer;
   border-radius: 50%;
+}
+
+/* Hover/spin transforms live on the inner SVG, never on the button, so the
+   clickable hit-area stays fixed. Transforming the button itself shifted its
+   elliptical hit-area out from under a stationary cursor, causing a hover/unhover
+   flicker (cursor stuttering between arrow and hand) and clicks that missed. */
+.cover-badge-svg {
+  display: block;
+  transform-origin: center;
   transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.badge-btn:hover {
+.badge-btn:hover .cover-badge-svg,
+.badge-btn:focus-visible .cover-badge-svg {
   transform: scale(1.06) rotate(8deg);
+}
+
+.badge-btn:focus-visible {
+  outline: 2.5px solid var(--accent-blue);
+  outline-offset: 4px;
 }
 
 .badge-btn.is-spinning .cover-badge-svg {
@@ -55,9 +73,25 @@
 }
 
 @keyframes badgeSpin {
-  0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(190deg) scale(1.1); }
-  100% { transform: rotate(360deg) scale(1); }
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(190deg) scale(1.1);
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+  }
+}
+
+/* Promote parallax layers to their own GPU compositor layer so text and box-shadow
+   are rasterized once and only composited on move. Without this, the sub-pixel
+   translation re-rasterizes the text and repaints the shadow every frame, which
+   reads as shimmer/jitter on the form and about boxes (the photo, a single image,
+   composites cheaply and hid the problem). */
+[data-parallax] {
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .polaroid-wrap {
@@ -88,7 +122,7 @@
   position: relative;
   z-index: 3;
   width: clamp(94px, 14.8vw, 128px);
-  background: #FFFFFF;
+  background: #ffffff;
   border: var(--border-ink);
   padding: 6px 6px 8px;
   box-shadow: var(--shadow-polaroid);
@@ -98,13 +132,23 @@
   gap: 5px;
 }
 
+.polaroid-photo-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border: 1px solid #222222;
+  background: #ffffff;
+}
+
+/* Zoom + pan steer the face into the square slot; the frame clips the overflow. */
 .polaroid-photo {
   width: 100%;
-  height: auto;
-  aspect-ratio: 1 / 1;
+  height: 100%;
   object-fit: cover;
   display: block;
-  border: 1px solid #222222;
+  transform: scale(var(--photo-zoom)) translate(var(--photo-pan-x), var(--photo-pan-y));
+  transform-origin: 50% 50%;
 }
 
 .polaroid-caption {
@@ -710,7 +754,7 @@
   padding: 2px 7px;
   border-radius: 4px;
   background: var(--accent-blue);
-  color: #FFFFFF;
+  color: #ffffff;
   font-family: var(--font-stamp);
   font-size: 0.68rem;
 }
@@ -790,7 +834,7 @@
 
 .form-field :is(:user-invalid, .is-field-invalid) {
   border-color: var(--stamp-red);
-  background: #FCE8E6;
+  background: #fce8e6;
 }
 
 .form-field input:user-valid,
@@ -899,4 +943,3 @@
     grid-template-columns: 60px 1fr 34px auto;
   }
 }
-

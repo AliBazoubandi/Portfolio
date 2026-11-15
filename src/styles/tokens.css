@@ -1,22 +1,22 @@
 :root {
   /* Palette sampled from the reference case-study folder */
-  --bg-royal: #0A2FD6;
-  --bg-backdrop-blue: #5876EC;
-  --folder-beige: #E3D7C1;
-  --folder-beige-dark: #D7C8AC;
-  --folder-spine: #C9B994;
-  --folder-inside: #EDE3CF;
-  --paper-light: #F3F0E8;
-  --paper-white: #FAF8F2;
+  --bg-royal: #0a2fd6;
+  --bg-backdrop-blue: #5876ec;
+  --folder-beige: #e3d7c1;
+  --folder-beige-dark: #d7c8ac;
+  --folder-spine: #c9b994;
+  --folder-inside: #ede3cf;
+  --paper-light: #f3f0e8;
+  --paper-white: #faf8f2;
 
   /* Ink & Semantic Accents (WCAG AA checked against folder & paper surfaces) */
   --ink: #232323;
   --ink-muted: #595348;
-  --ink-rule: #9B9383;
-  --accent-blue: #1535B8;
-  --stamp-green: #186B32;
-  --stamp-red: #B91C1C;
-  --highlight-yellow: #FFD13B;
+  --ink-rule: #9b9383;
+  --accent-blue: #1535b8;
+  --stamp-green: #186b32;
+  --stamp-red: #b91c1c;
+  --highlight-yellow: #ffd13b;
 
   /* Typography */
   --font-sans: 'Jost', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -26,7 +26,13 @@
   --shadow-folder: 8px 10px 0px rgba(10, 18, 58, 0.42);
   --shadow-card: 3px 4px 0px rgba(35, 35, 35, 0.16);
   --shadow-polaroid: 4px 5px 0px rgba(35, 35, 35, 0.25);
-  --shadow-pill: 3px 3px 0px #151B42;
+  --shadow-pill: 3px 3px 0px #151b42;
+
+  /* Portrait crop: zoom + pan steer the face into the square photo slot.
+     Pan is applied pre-scale, so tune zoom first, then pan to recenter. */
+  --photo-zoom: 1.9;
+  --photo-pan-x: 20%;
+  --photo-pan-y: 1%;
 
   /* Radii & Borders */
   --border-ink: 1.5px solid #222222;
@@ -104,4 +110,3 @@ body {
   outline: 3px solid var(--accent-blue);
   outline-offset: 2px;
 }
-

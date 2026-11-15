@@ -1,16 +1,17 @@
 import { CONTENT } from '../content';
+import { esc } from '../escape';
 
 export function renderAboutPage(): string {
   const paragraphs = CONTENT.about.paragraphs
-    .map((p) => `<p class="page-copy">${p}</p>`)
+    .map((p) => `<p class="page-copy">${esc(p)}</p>`)
     .join('');
 
   const facts = CONTENT.about.quickFacts
     .map(
       (fact) => `
       <div class="fact-row">
-        <dt class="fact-label">${fact.label}</dt>
-        <dd class="fact-value">${fact.value}</dd>
+        <dt class="fact-label">${esc(fact.label)}</dt>
+        <dd class="fact-value">${esc(fact.value)}</dd>
       </div>
     `
     )
@@ -19,7 +20,7 @@ export function renderAboutPage(): string {
   return `
     <section class="page-inner" aria-labelledby="page-about-title">
       <header class="page-header">
-        <h2 id="page-about-title" class="page-title">${CONTENT.about.heading}</h2>
+        <h2 id="page-about-title" class="page-title">${esc(CONTENT.about.heading)}</h2>
         <span class="page-folio">PAGE 01</span>
       </header>
       <div class="about-paragraphs">${paragraphs}</div>
@@ -30,4 +31,3 @@ export function renderAboutPage(): string {
     </section>
   `;
 }
-

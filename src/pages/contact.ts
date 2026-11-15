@@ -1,13 +1,14 @@
 import { CONTENT } from '../content';
+import { esc } from '../escape';
 
 export function renderContactPage(): string {
   const { contact, cv } = CONTENT;
   const socialsHtml = contact.socials
     .map(
       (s) => `
-      <a href="${s.href}" target="_blank" rel="noopener noreferrer" class="social-chip-link">
-        <span class="social-chip-k">${s.label}</span>
-        <span class="social-chip-v">${s.handle} ↗</span>
+      <a href="${esc(s.href)}" target="_blank" rel="noopener noreferrer" class="social-chip-link">
+        <span class="social-chip-k">${esc(s.label)}</span>
+        <span class="social-chip-v">${esc(s.handle)} ↗</span>
       </a>
     `
     )
@@ -16,26 +17,26 @@ export function renderContactPage(): string {
   return `
     <section class="page-inner" aria-labelledby="page-contact-title">
       <header class="page-header">
-        <h2 id="page-contact-title" class="page-title">${contact.heading}</h2>
+        <h2 id="page-contact-title" class="page-title">${esc(contact.heading)}</h2>
         <span class="page-folio">PAGE 06</span>
       </header>
-      <p class="page-copy">${contact.intro}</p>
+      <p class="page-copy">${esc(contact.intro)}</p>
 
       <div class="contact-quick-row">
         <button
           type="button"
           class="copy-email-btn"
-          data-copy-email="${contact.email}"
-          aria-label="Copy email address ${contact.email}"
+          data-copy-email="${esc(contact.email)}"
+          aria-label="Copy email address ${esc(contact.email)}"
         >
-          <span class="copy-email-text">${contact.email}</span>
+          <span class="copy-email-text">${esc(contact.email)}</span>
           <span class="copy-email-badge">COPY</span>
         </button>
-        <a href="mailto:${contact.email}" class="paper-action-btn paper-action-btn--secondary">
+        <a href="mailto:${esc(contact.email)}" class="paper-action-btn paper-action-btn--secondary">
           MAILTO ✉
         </a>
-        <a href="${cv.url}" download="${cv.filename}" class="paper-action-btn">
-          ↓ ${cv.label}
+        <a href="${esc(cv.url)}" download="${esc(cv.filename)}" class="paper-action-btn">
+          ↓ ${esc(cv.label)}
         </a>
       </div>
 
@@ -117,4 +118,3 @@ export function renderContactPage(): string {
     </section>
   `;
 }
-

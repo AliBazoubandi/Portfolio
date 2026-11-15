@@ -1,53 +1,52 @@
 [
   {
-    "id": "erp-sync-engine",
-    "name": "ERP Sync Engine",
-    "client": "Operations / TODO: Client",
-    "type": "DATA PIPELINE",
-    "tech": ["Python", "PostgreSQL", "PHP", "Redis"],
-    "description": "Idempotent two-way connector reconciling invoices, stock levels, and ledger entries across ERP instances.",
+    "id": "data-gateway",
+    "name": "Data Gateway",
+    "client": "Open Source",
+    "type": "DATA GATEWAY",
+    "tech": ["PHP", "MariaDB", "SQL Server", "PostgreSQL"],
+    "description": "Authenticated gateway for pre-approved SQL queries across MariaDB/MySQL, SQL Server, and PostgreSQL, returning time-limited JSON result links.",
     "year": "2026",
-    "url": "https://github.com/alibazoubandi"
+    "url": "https://github.com/AliBazoubandi/data-gateway"
   },
   {
-    "id": "anomaly-pipeline-ml",
-    "name": "StreamGuard ML",
-    "client": "Research / Applied ML",
-    "type": "MACHINE LEARNING",
-    "tech": ["Python", "PyTorch", "scikit-learn", "FastAPI"],
-    "description": "Near-real-time anomaly scoring service for irregular multi-tenant transactional event logs.",
-    "year": "2025",
-    "url": "https://github.com/alibazoubandi"
+    "id": "Intelligent-BPM",
+    "name": "Intelligent BPM",
+    "client": "Open Source",
+    "type": "AI / BPM PLATFORM",
+    "tech": ["PHP", "AI Agents", "RAG"],
+    "description": "Intelligent Business Process Management platform featuring an autonomous AI evaluation agent and a Persian RAG assistant.",
+    "year": "2026",
+    "url": "https://github.com/AliBazoubandi/Intelligent-BPM"
   },
   {
-    "id": "telemetry-warehouse",
-    "name": "MetricVault Warehouse",
-    "client": "Internal Analytics",
-    "type": "DATA ENGINEERING",
-    "tech": ["SQL", "dbt", "Airflow", "Docker"],
-    "description": "Modular dimensional warehouse transforming raw webhook payloads into daily KPI marts.",
-    "year": "2025",
-    "url": "https://github.com/alibazoubandi"
+    "id": "competitor-price-intelligence",
+    "name": "Competitor Price Intelligence",
+    "client": "Open Source",
+    "type": "PRICE INTELLIGENCE",
+    "tech": ["PHP", "AI Matching", "ERP"],
+    "description": "Real-time competitor price intelligence with multi-city harvesting, AI product matching, and an ERP pricing room with Jalali calendar support.",
+    "year": "2026",
+    "url": "https://github.com/AliBazoubandi/competitor-price-intelligence"
   },
   {
-    "id": "shader-field-notes",
-    "name": "Spatial Data Atlas",
-    "client": "Interactive R&D",
+    "id": "family-library-3d",
+    "name": "Family Library 3D",
+    "client": "Personal Project",
     "type": "3D / WEBGL",
-    "tech": ["TypeScript", "Three.js", "WebGL"],
-    "description": "GPU-instanced 3D scatter and cluster explorer rendering 100k+ embeddings smoothly in the browser.",
-    "year": "2024",
-    "url": "https://github.com/alibazoubandi"
+    "tech": ["JavaScript", "Three.js", "Vite", "PocketBase"],
+    "description": "Immersive 3D family library: drive between family houses, browse animated 3D bookshelves in cozy reading rooms, and manage book lending.",
+    "year": "2026",
+    "url": "https://github.com/AliBazoubandi/family-library-3d"
   },
   {
-    "id": "sql-lineage-tracer",
-    "name": "SQL Lineage Tracer",
-    "client": "Open Source Tool",
-    "type": "DEV TOOLING",
-    "tech": ["TypeScript", "Python", "AST"],
-    "description": "Static column-level lineage parser mapping upstream tables to downstream BI views.",
-    "year": "2024",
-    "url": "https://github.com/alibazoubandi"
+    "id": "Bale-Telegram-Bot",
+    "name": "Bale / Telegram Bot",
+    "client": "Open Source",
+    "type": "NOTIFICATION API",
+    "tech": ["PHP", "REST API", "Telegram", "Bale"],
+    "description": "Unified notification dispatch system and REST API for Telegram and Bale messenger bots with contact management and an admin dashboard.",
+    "year": "2026",
+    "url": "https://github.com/AliBazoubandi/Bale-Telegram-Bot"
   }
 ]
-

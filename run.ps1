@@ -7,5 +7,5 @@ if (-not (Test-Path "node_modules")) {
 }
 
 Write-Host "Starting portfolio at http://localhost:5173 ..." -ForegroundColor Green
-npm run run
+npm run start
 

@@ -5,5 +5,5 @@ if not exist "node_modules" (
   call npm install
 )
 echo Starting portfolio at http://localhost:5173 ...
-call npm run run
+call npm run start
 

@@ -134,8 +134,8 @@ export const CONTENT: PortfolioContent = {
     // TODO: Drop your real halftone portrait at public/assets/photo-halftone.png
     src: '/assets/photo-halftone.png',
     alt: 'Pop-art halftone portrait of Ali Bazoubandi',
-    width: 480,
-    height: 480,
+    width: 1254,
+    height: 1254,
   },
 
   location: {
@@ -146,7 +146,7 @@ export const CONTENT: PortfolioContent = {
 
   // TODO: Update your current focus / availability summary
   currently: 'Building ML pipelines & full-stack systems',
-  year: '2026',
+  year: String(new Date().getFullYear()),
 
   // TODO: Customize your 3–4 line cover bio
   aboutShort:
@@ -181,14 +181,13 @@ export const CONTENT: PortfolioContent = {
   },
 
   github: {
-    // TODO: Replace with your exact GitHub username and pinned repository names
     username: 'alibazoubandi',
     pinnedRepos: [
-      'erp-sync-engine',
-      'anomaly-pipeline-ml',
-      'telemetry-warehouse',
-      'shader-field-notes',
-      'sql-lineage-tracer',
+      'data-gateway',
+      'Intelligent-BPM',
+      'competitor-price-intelligence',
+      'family-library-3d',
+      'Bale-Telegram-Bot',
     ],
     maxProjects: 6,
   },
@@ -316,7 +315,13 @@ export const CONTENT: PortfolioContent = {
     university: 'Department of Computer Science (TODO: University Name)',
     supervisor: 'Dr. Placeholder Supervisor',
     year: '2025',
-    keywords: ['Time-Series', 'Anomaly Detection', 'Representation Learning', 'Data Pipelines', 'ERP Logs'],
+    keywords: [
+      'Time-Series',
+      'Anomaly Detection',
+      'Representation Learning',
+      'Data Pipelines',
+      'ERP Logs',
+    ],
     abstract:
       'Enterprise operational logs combine structured transactional tables with irregular event timestamps, causing standard univariate detectors to trigger excessive false positives. This thesis proposes a lightweight hybrid architecture combining temporal feature aggregation with self-supervised tabular embeddings, improving F1 detection accuracy by 14% on real-world ERP audit streams while keeping inference latency under 12 ms per batch.',
     // TODO: Link your real thesis PDF and repository
@@ -326,7 +331,8 @@ export const CONTENT: PortfolioContent = {
 
   contact: {
     heading: '06 // OPEN A NEW CASE',
-    intro: 'Available for full-time roles, ML/data engineering consulting, or technically ambitious collaborations.',
+    intro:
+      'Available for full-time roles, ML/data engineering consulting, or technically ambitious collaborations.',
     // TODO: Replace with your real email address
     email: 'hello@alibazoubandi.me',
     socials: [
@@ -371,4 +377,3 @@ export const CONTENT: PortfolioContent = {
     sameAs: ['https://github.com/alibazoubandi', 'https://linkedin.com/in/alibazoubandi'],
   },
 };
-

@@ -1,6 +1,7 @@
 import { CONTENT } from './content';
 import { ProjectItem } from './github';
-import { renderCheckboxIcon } from './svg/assets';
+import { renderCheckboxIcon, renderCircularBadge } from './svg/assets';
+import { esc } from './escape';
 
 /**
  * Renders the fast, accessible plain single-page document layout
@@ -11,8 +12,8 @@ export function renderPlainPortfolio(container: HTMLElement, projects: ProjectIt
     .map(
       (f) => `
       <div class="fact-row">
-        <dt class="fact-label">${f.label}</dt>
-        <dd class="fact-value">${f.value}</dd>
+        <dt class="fact-label">${esc(f.label)}</dt>
+        <dd class="fact-value">${esc(f.value)}</dd>
       </div>
     `
     )
@@ -24,11 +25,11 @@ export function renderPlainPortfolio(container: HTMLElement, projects: ProjectIt
         (entry) => `
         <article class="timeline-card">
           <div class="timeline-card-top">
-            <h3 class="timeline-role">${entry.title}</h3>
-            <span class="timeline-dates">${entry.dates}</span>
+            <h3 class="timeline-role">${esc(entry.title)}</h3>
+            <span class="timeline-dates">${esc(entry.dates)}</span>
           </div>
-          <p class="timeline-org">${entry.organization}${entry.location ? ` · ${entry.location}` : ''}</p>
-          <ul class="timeline-bullets">${entry.bullets.map((b) => `<li>${b}</li>`).join('')}</ul>
+          <p class="timeline-org">${esc(entry.organization)}${entry.location ? ` · ${esc(entry.location)}` : ''}</p>
+          <ul class="timeline-bullets">${entry.bullets.map((b) => `<li>${esc(b)}</li>`).join('')}</ul>
         </article>
       `
       )
@@ -38,14 +39,14 @@ export function renderPlainPortfolio(container: HTMLElement, projects: ProjectIt
     .map(
       (group) => `
       <div class="skill-group-card">
-        <h3 class="subsection-label">${group.category}</h3>
+        <h3 class="subsection-label">${esc(group.category)}</h3>
         <div class="skill-cb-list">
           ${group.items
             .map(
               (item) => `
             <div class="cb-row">
               ${renderCheckboxIcon(item.checked)}
-              <span>${item.name}</span>
+              <span>${esc(item.name)}</span>
             </div>
           `
             )
@@ -61,15 +62,15 @@ export function renderPlainPortfolio(container: HTMLElement, projects: ProjectIt
       (project) => `
       <article class="project-card">
         <div class="project-card-top">
-          <span class="project-type-tag">${project.type}</span>
-          <span class="project-year">${project.year}${project.stars ? ` · ★ ${project.stars}` : ''}</span>
+          <span class="project-type-tag">${esc(project.type)}</span>
+          <span class="project-year">${esc(project.year)}${project.stars ? ` · ★ ${esc(project.stars)}` : ''}</span>
         </div>
-        <h3 class="project-name">${project.name}</h3>
-        <p class="project-client">${project.client}</p>
-        <p class="project-desc">${project.description}</p>
+        <h3 class="project-name">${esc(project.name)}</h3>
+        <p class="project-client">${esc(project.client)}</p>
+        <p class="project-desc">${esc(project.description)}</p>
         <div class="project-card-footer">
-          <div class="tech-chips">${project.tech.map((t) => `<span class="tech-chip">${t}</span>`).join('')}</div>
-          <a href="${project.url}" target="_blank" rel="noopener noreferrer" class="project-link-btn">OPEN FILE ↗</a>
+          <div class="tech-chips">${project.tech.map((t) => `<span class="tech-chip">${esc(t)}</span>`).join('')}</div>
+          <a href="${esc(project.url)}" target="_blank" rel="noopener noreferrer" class="project-link-btn">OPEN FILE ↗</a>
         </div>
       </article>
     `
@@ -79,9 +80,9 @@ export function renderPlainPortfolio(container: HTMLElement, projects: ProjectIt
   const socialsHtml = CONTENT.contact.socials
     .map(
       (s) => `
-      <a href="${s.href}" target="_blank" rel="noopener noreferrer" class="social-chip-link">
-        <span class="social-chip-k">${s.label}</span>
-        <span class="social-chip-v">${s.handle} ↗</span>
+      <a href="${esc(s.href)}" target="_blank" rel="noopener noreferrer" class="social-chip-link">
+        <span class="social-chip-k">${esc(s.label)}</span>
+        <span class="social-chip-v">${esc(s.handle)} ↗</span>
       </a>
     `
     )
@@ -91,18 +92,25 @@ export function renderPlainPortfolio(container: HTMLElement, projects: ProjectIt
     <article class="plain-dossier">
       <header class="plain-hero">
         <div class="plain-hero-id">
-          <span class="stamp-status" style="display:inline-block; transform:rotate(-2deg)">${CONTENT.statusStamp}</span>
-          <h1>${CONTENT.owner}</h1>
-          <p class="plain-hero-roles">${CONTENT.roles.join(' · ')}</p>
-          <p class="plain-hero-meta">${CONTENT.caseNumber} · Age ${CONTENT.age} · ${CONTENT.location.label} · ${CONTENT.currently}</p>
+          <div class="plain-hero-brand">
+            ${renderCircularBadge(CONTENT.badgeEasterEgg.ringText)}
+            <span class="stamp-status" style="display:inline-block; transform:rotate(-2deg)">${esc(CONTENT.statusStamp)}</span>
+          </div>
+          <h1>${esc(CONTENT.owner)}</h1>
+          <p class="plain-hero-roles">${esc(CONTENT.roles.join(' · '))}</p>
+          <p class="plain-hero-meta">${esc(CONTENT.caseNumber)} · Age ${esc(CONTENT.age)} · ${esc(CONTENT.location.label)} · ${esc(CONTENT.currently)}</p>
         </div>
-        <img
-          class="plain-photo"
-          src="${CONTENT.photo.src}"
-          alt="${CONTENT.photo.alt}"
-          width="${CONTENT.photo.width}"
-          height="${CONTENT.photo.height}"
-        />
+        <span class="plain-photo-frame">
+          <span class="plain-photo-clip">
+            <img
+              class="plain-photo"
+              src="${esc(CONTENT.photo.src)}"
+              alt="${esc(CONTENT.photo.alt)}"
+              width="${esc(CONTENT.photo.width)}"
+              height="${esc(CONTENT.photo.height)}"
+            />
+          </span>
+        </span>
       </header>
 
       <nav class="plain-quick-nav" aria-label="Plain view sections">
@@ -112,12 +120,12 @@ export function renderPlainPortfolio(container: HTMLElement, projects: ProjectIt
         <a href="#plain-projects">Projects</a>
         <a href="#plain-thesis">Thesis</a>
         <a href="#plain-contact">Contact</a>
-        <a href="${CONTENT.cv.url}" download="${CONTENT.cv.filename}">↓ Download CV</a>
+        <a href="${esc(CONTENT.cv.url)}" download="${esc(CONTENT.cv.filename)}">↓ Download CV</a>
       </nav>
 
       <section id="plain-about" class="plain-section">
         <h2>01 // About Me</h2>
-        ${CONTENT.about.paragraphs.map((p) => `<p class="page-copy" style="margin-bottom:10px">${p}</p>`).join('')}
+        ${CONTENT.about.paragraphs.map((p) => `<p class="page-copy" style="margin-bottom:10px">${esc(p)}</p>`).join('')}
         <dl class="facts-list">${factsHtml}</dl>
       </section>
 
@@ -141,29 +149,28 @@ export function renderPlainPortfolio(container: HTMLElement, projects: ProjectIt
 
       <section id="plain-thesis" class="plain-section">
         <h2>05 // Thesis &amp; Research</h2>
-        <p><strong>${CONTENT.thesis.title}</strong> (${CONTENT.thesis.status})</p>
-        <p class="page-copy" style="margin:8px 0">${CONTENT.thesis.abstract}</p>
-        <p class="timeline-org">${CONTENT.thesis.university} · Supervisor: ${CONTENT.thesis.supervisor}</p>
+        <p><strong>${esc(CONTENT.thesis.title)}</strong> (${esc(CONTENT.thesis.status)})</p>
+        <p class="page-copy" style="margin:8px 0">${esc(CONTENT.thesis.abstract)}</p>
+        <p class="timeline-org">${esc(CONTENT.thesis.university)} · Supervisor: ${esc(CONTENT.thesis.supervisor)}</p>
         <div class="thesis-actions" style="margin-top:12px">
-          <a href="${CONTENT.thesis.pdfUrl}" class="paper-action-btn" target="_blank" rel="noopener noreferrer">THESIS PDF ↗</a>
-          <a href="${CONTENT.thesis.repoUrl}" class="paper-action-btn paper-action-btn--secondary" target="_blank" rel="noopener noreferrer">RESEARCH REPO ↗</a>
+          <a href="${esc(CONTENT.thesis.pdfUrl)}" class="paper-action-btn" target="_blank" rel="noopener noreferrer">THESIS PDF ↗</a>
+          <a href="${esc(CONTENT.thesis.repoUrl)}" class="paper-action-btn paper-action-btn--secondary" target="_blank" rel="noopener noreferrer">RESEARCH REPO ↗</a>
         </div>
       </section>
 
       <section id="plain-contact" class="plain-section">
         <h2>06 // Contact</h2>
-        <p class="page-copy" style="margin-bottom:12px">${CONTENT.contact.intro}</p>
+        <p class="page-copy" style="margin-bottom:12px">${esc(CONTENT.contact.intro)}</p>
         <div class="contact-quick-row">
-          <button type="button" class="copy-email-btn" data-copy-email="${CONTENT.contact.email}">
-            <span class="copy-email-text">${CONTENT.contact.email}</span>
+          <button type="button" class="copy-email-btn" data-copy-email="${esc(CONTENT.contact.email)}">
+            <span class="copy-email-text">${esc(CONTENT.contact.email)}</span>
             <span class="copy-email-badge">COPY</span>
           </button>
-          <a href="mailto:${CONTENT.contact.email}" class="paper-action-btn paper-action-btn--secondary">MAILTO ✉</a>
-          <a href="${CONTENT.cv.url}" download="${CONTENT.cv.filename}" class="paper-action-btn">↓ ${CONTENT.cv.label}</a>
+          <a href="mailto:${esc(CONTENT.contact.email)}" class="paper-action-btn paper-action-btn--secondary">MAILTO ✉</a>
+          <a href="${esc(CONTENT.cv.url)}" download="${esc(CONTENT.cv.filename)}" class="paper-action-btn">↓ ${esc(CONTENT.cv.label)}</a>
         </div>
         <div class="socials-row" style="margin-top:12px">${socialsHtml}</div>
       </section>
     </article>
   `;
 }
-

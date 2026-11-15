@@ -13,7 +13,7 @@
   <text x="500" y="298" font-family="sans-serif" font-weight="800" font-size="38" fill="#1F1F1F">Ali Bazoubandi</text>
   <line x1="380" y1="322" x2="840" y2="322" stroke="#9B9384" stroke-width="1.5"/>
   <text x="382" y="365" font-family="sans-serif" font-size="20" fill="#6F695E">Roles</text>
-  <text x="500" y="366" font-family="sans-serif" font-weight="600" font-size="24" fill="#1F1F1F">Software Engineer · Data Scientist</text>
+  <text x="500" y="366" font-family="sans-serif" font-weight="600" font-size="19" fill="#1F1F1F">Software Engineer · Data Scientist</text>
   <text x="605" y="510" text-anchor="middle" font-family="sans-serif" font-weight="700" font-size="16" letter-spacing="3" fill="#2B2B2B">INFORMATION IN THIS RECORD IS PUBLIC</text>
 </svg>
 

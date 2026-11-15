@@ -3,32 +3,31 @@
  * masking tape, perforated flag stamps, and animated checkboxes.
  */
 
+import { esc } from '../escape';
+
 export type FlagCode = 'IR' | 'CA' | 'DE' | 'NL' | 'US' | 'GB';
 
+/** Personal "AB" hexagon emblem (public asset), reused by the cover seal + plain view. */
+export const BADGE_EMBLEM_SRC = '/assets/badge-emblem.png';
+
 export function renderCircularBadge(ringText: string): string {
-  const safeText = ringText.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const safeText = esc(ringText);
   return `
     <svg class="cover-badge-svg" viewBox="0 0 120 120" width="94" height="94" role="img" aria-label="Ali Bazoubandi seal badge — click for a secret note">
       <defs>
         <path id="badge-ring-path" d="M 60,60 m -44,0 a 44,44 0 1,1 88,0 a 44,44 0 1,1 -88,0" />
+        <clipPath id="badge-emblem-clip"><circle cx="60" cy="60" r="31" /></clipPath>
       </defs>
       <circle cx="60" cy="60" r="56" fill="#F3F0E8" stroke="#222222" stroke-width="2.2" />
-      <circle cx="60" cy="60" r="32" fill="#E3D7C1" stroke="#222222" stroke-width="1.8" />
+      <!-- Dark navy medallion so the emblem's white letters + orange brackets keep contrast -->
+      <circle cx="60" cy="60" r="34" fill="#0E1638" stroke="#222222" stroke-width="1.8" />
+      <circle cx="60" cy="60" r="34" fill="none" stroke="#FF6A1A" stroke-width="1.4" opacity="0.85" />
+      <g clip-path="url(#badge-emblem-clip)">
+        <image href="${BADGE_EMBLEM_SRC}" x="12" y="12" width="96" height="96" preserveAspectRatio="xMidYMid meet" />
+      </g>
       <text class="badge-ring-text" font-size="7.6" font-weight="700" letter-spacing="1.45" fill="#1F1F1F">
         <textPath href="#badge-ring-path" startOffset="2%">${safeText}</textPath>
       </text>
-      <!-- Original pop-art data/code emblem -->
-      <g transform="translate(60, 61)">
-        <rect x="-15" y="-14" width="30" height="26" rx="6" fill="#0A2FD6" stroke="#222222" stroke-width="2" />
-        <path d="M-15,-5 L15,-5" stroke="#222222" stroke-width="1.8" />
-        <circle cx="-7" cy="-9.5" r="1.8" fill="#FFD13B" />
-        <circle cx="-1" cy="-9.5" r="1.8" fill="#FF5A4E" />
-        <!-- Geometric eyes / code brackets -->
-        <path d="M-8,1 L-4,4 L-8,7" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-        <path d="M8,1 L4,4 L8,7" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-        <!-- Data spark crown -->
-        <polygon points="0,-24 3,-16 11,-16 4,-11 6,-4 0,-8 -6,-4 -4,-11 -11,-16 -3,-16" fill="#FFD13B" stroke="#222222" stroke-width="1.6" stroke-linejoin="round" />
-      </g>
     </svg>
   `;
 }
@@ -174,11 +173,7 @@ function renderFlagArtwork(code: FlagCode): string {
   switch (code) {
     case 'IR':
       return `
-        <rect x="0" y="0" width="54" height="12" fill="#239F40" />
-        <rect x="0" y="12" width="54" height="12" fill="#FFFFFF" />
-        <rect x="0" y="24" width="54" height="12" fill="#DA0000" />
-        <circle cx="27" cy="18" r="3.6" fill="none" stroke="#DA0000" stroke-width="1.5" />
-        <line x1="27" y1="13.5" x2="27" y2="22.5" stroke="#DA0000" stroke-width="1.4" />
+        <image href="/assets/flag-iran.jpg" x="0" y="0" width="54" height="36" preserveAspectRatio="xMidYMid slice" />
       `;
     case 'CA':
       return `
@@ -223,8 +218,8 @@ function renderFlagArtwork(code: FlagCode): string {
 export function renderPostageFlagStamp(code: FlagCode, label: string): string {
   // Perforated postage stamp silhouette
   return `
-    <div class="flag-stamp" aria-label="Location: ${label}">
-      <svg class="flag-stamp-svg" viewBox="0 0 74 54" width="74" height="54" role="img" aria-label="${label} flag stamp">
+    <div class="flag-stamp" aria-label="Location: ${esc(label)}">
+      <svg class="flag-stamp-svg" viewBox="0 0 74 54" width="74" height="54" role="img" aria-label="${esc(label)} flag stamp">
         <defs>
           <mask id="stamp-perf-mask-${code}">
             <rect x="2" y="2" width="70" height="50" fill="white" />
@@ -261,7 +256,7 @@ export function renderPostageFlagStamp(code: FlagCode, label: string): string {
         <path d="M52,32 Q62,28 69,33" fill="none" stroke="rgba(35,35,35,0.45)" stroke-width="1.2" />
         <path d="M51,37 Q62,33 69,38" fill="none" stroke="rgba(35,35,35,0.45)" stroke-width="1.2" />
       </svg>
-      <span class="flag-stamp-caption">${label}</span>
+      <span class="flag-stamp-caption">${esc(label)}</span>
     </div>
   `;
 }
@@ -278,4 +273,3 @@ export function renderCheckboxIcon(checked: boolean): string {
     </svg>
   `;
 }
-

@@ -41,18 +41,32 @@ async function detectSimpleMode(): Promise<boolean> {
 
   return new Promise((resolve) => {
     let frames = 0;
+    let settled = false;
+    let rafId = 0;
     const start = performance.now();
+
+    const finish = (simple: boolean) => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(guard);
+      cancelAnimationFrame(rafId);
+      resolve(simple);
+    };
+
+    // A backgrounded / throttled tab pauses rAF; bail out instead of hanging init.
+    const guard = window.setTimeout(() => finish(false), 1500);
+
     const tick = () => {
       frames++;
       if (frames >= 8) {
         const elapsed = performance.now() - start;
         const fps = (frames / Math.max(elapsed, 1)) * 1000;
-        resolve(fps < CONFIG.performance.minProbeFps);
+        finish(fps < CONFIG.performance.minProbeFps);
         return;
       }
-      requestAnimationFrame(tick);
+      rafId = requestAnimationFrame(tick);
     };
-    requestAnimationFrame(tick);
+    rafId = requestAnimationFrame(tick);
   });
 }
 
@@ -71,6 +85,9 @@ export class FolderChoreography {
   private simpleMode = false;
   private pageEls: HTMLElement[] = [];
   private tabBtns: HTMLButtonElement[] = [];
+  private coverFrontEl: HTMLElement | null = null;
+  private pendingProgress = 0;
+  private lastProgressSaveAt = 0;
 
   constructor(private pages: PageDefinition[]) {}
 
@@ -87,6 +104,7 @@ export class FolderChoreography {
     const closedActions = document.getElementById('closed-actions');
     const scrollHint = document.getElementById('scroll-hint');
     const backToTopBtn = document.getElementById('back-to-top-btn');
+    this.coverFrontEl = document.getElementById('cover-front');
 
     if (
       !stackEl ||
@@ -157,6 +175,7 @@ export class FolderChoreography {
     });
 
     this.tabBtns = Array.from(tabsEl.querySelectorAll<HTMLButtonElement>('.index-tab-btn'));
+    this.bindPageWheelScroll();
 
     // Compute total scroll distance (scales when extra Projects spread pages exist)
     const extraProjectPages = Math.max(0, this.pages.length - 6);
@@ -169,7 +188,7 @@ export class FolderChoreography {
       duration: CONFIG.lenis.duration,
       wheelMultiplier: CONFIG.lenis.wheelMultiplier,
       touchMultiplier: CONFIG.lenis.touchMultiplier,
-      syncTouch: !isTouch ? false : false,
+      syncTouch: isTouch,
     });
 
     this.lenis.on('scroll', () => {
@@ -208,14 +227,10 @@ export class FolderChoreography {
           scrollHint.classList.toggle('is-hidden', p > 0.015);
         }
         folderRoot.classList.toggle('is-closed-hover', p < 0.02);
+        if (this.coverFrontEl) this.coverFrontEl.inert = p > 0.06;
         this.syncDwellState(p);
         this.syncAudioAndStampEvents(p, self.direction, closedActions);
-
-        try {
-          sessionStorage.setItem(PROGRESS_STORAGE_KEY, p.toFixed(4));
-        } catch {
-          // Ignore storage quota errors
-        }
+        this.queueProgressSave(p);
       },
     });
 
@@ -239,11 +254,18 @@ export class FolderChoreography {
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
         ScrollTrigger.refresh();
+      } else {
+        this.saveProgress();
       }
     });
+    window.addEventListener('pagehide', () => this.saveProgress());
 
     // 8. Anchor deep-link (#about, #projects, etc.) or reload restoration
     this.handleInitialRouteOrRestore();
+
+    // Font swap changes page heights after the first pin measurement; re-measure once
+    // fonts settle so the scroll spacer and dwell windows are correct on load.
+    void document.fonts.ready.then(() => ScrollTrigger.refresh());
   }
 
   private buildChoreography(
@@ -261,18 +283,28 @@ export class FolderChoreography {
     const e = CONFIG.easings;
     this.dwellWindows = [];
 
-    const desktopShiftX = window.innerWidth > 960 ? Math.min(window.innerWidth * 0.14, 175) : 0;
+    // Function-based so ScrollTrigger refresh re-evaluates it across the 960px boundary.
+    const desktopShiftX = () =>
+      window.innerWidth > 960 ? Math.min(window.innerWidth * 0.14, 175) : 0;
 
     // Phase 0 -> 12%: Cover Opens (or fades aside in simpleMode)
     if (!this.simpleMode) {
-      tl.to(folderRoot, { rotation: 0, scale: 1.02, x: desktopShiftX, duration: w.coverOpen, ease: e.coverOpen }, 0);
+      tl.to(
+        folderRoot,
+        { rotation: 0, scale: 1.02, x: desktopShiftX, duration: w.coverOpen, ease: e.coverOpen },
+        0
+      );
       tl.to(coverHinge, { rotateY: -162, duration: w.coverOpen, ease: e.coverOpen }, 0);
     } else {
       tl.to(coverHinge, { opacity: 0, y: -18, duration: w.coverOpen, ease: 'power2.out' }, 0);
     }
 
     if (pageTopGrip) {
-      tl.to(pageTopGrip, { opacity: 1, duration: w.coverOpen * 0.35, ease: 'power1.out' }, w.coverOpen * 0.45);
+      tl.to(
+        pageTopGrip,
+        { opacity: 1, duration: w.coverOpen * 0.35, ease: 'power1.out' },
+        w.coverOpen * 0.45
+      );
     }
 
     let cursor = w.coverOpen;
@@ -377,63 +409,107 @@ export class FolderChoreography {
     // Cover Closes back over the stack
     const closeStart = cursor;
     if (pageTopGrip) {
-      tl.to(pageTopGrip, { opacity: 0, duration: w.coverClose * 0.35, ease: 'power1.in' }, closeStart);
+      tl.to(
+        pageTopGrip,
+        { opacity: 0, duration: w.coverClose * 0.35, ease: 'power1.in' },
+        closeStart
+      );
     }
     if (!this.simpleMode) {
       tl.to(coverHinge, { rotateY: 0, duration: w.coverClose, ease: e.coverClose }, closeStart);
-      tl.to(folderRoot, { rotation: -1.35, scale: 1, x: 0, duration: w.coverClose, ease: e.coverClose }, closeStart);
+      tl.to(
+        folderRoot,
+        { rotation: -1.35, scale: 1, x: 0, duration: w.coverClose, ease: e.coverClose },
+        closeStart
+      );
     } else {
       tl.to(coverHinge, { opacity: 1, y: 0, duration: w.coverClose }, closeStart);
     }
     cursor += w.coverClose;
 
-    // Real overhead Hand Stamper descends toward the folder, presses onto the paper,
-    // leaves the "CASE CLOSED" impression, and lifts back toward the viewer.
+    // Overhead hand stamper accelerates down, squashes on impact, springs back, and
+    // lifts away — leaving a punched-in "CASE CLOSED" impression with an ink bloom.
     const stampStart = cursor;
-    const slamMoment = stampStart + w.stampSlam * 0.55;
+    const S = w.stampSlam;
+    const slamMoment = stampStart + S * 0.5;
+    const stampImpact = document.getElementById('stamp-impact');
 
     if (handStamper && !this.simpleMode) {
       tl.fromTo(
         handStamper,
-        { x: 0, y: 0, scale: 1.5, rotation: 4, opacity: 0 },
-        { x: 0, y: 0, scale: 1.05, rotation: 0, opacity: 1, duration: w.stampSlam * 0.4, ease: 'power2.out' },
+        { scale: 1.7, rotation: 7, y: -14, opacity: 0 },
+        { scale: 1.5, rotation: 5, y: -8, opacity: 1, duration: S * 0.2, ease: 'power2.out' },
         stampStart
       )
         .to(
           handStamper,
-          { scale: 0.97, duration: w.stampSlam * 0.16, ease: 'power4.in' },
-          stampStart + w.stampSlam * 0.4
+          { scale: 1, rotation: 0, y: 0, duration: S * 0.3, ease: e.stampSlam },
+          stampStart + S * 0.2
         )
         .to(
           handStamper,
-          { x: 18, y: -18, scale: 1.48, rotation: 6, opacity: 0, duration: w.stampSlam * 0.42, ease: 'power2.in' },
-          slamMoment + 0.08
+          { scaleX: 1.08, scaleY: 0.86, duration: S * 0.08, ease: 'power2.out' },
+          slamMoment
+        )
+        .to(
+          handStamper,
+          { scaleX: 1, scaleY: 1, duration: S * 0.12, ease: 'power2.inOut' },
+          slamMoment + S * 0.08
+        )
+        .to(
+          handStamper,
+          { scale: 1.55, rotation: 8, y: -30, opacity: 0, duration: S * 0.3, ease: 'power2.in' },
+          slamMoment + S * 0.2
         );
     }
 
-    tl.fromTo(
-      stampClosed,
-      { scale: 1, opacity: 0 },
-      { scale: 1, opacity: 1, duration: 0.08, ease: 'none' },
-      slamMoment + 0.04
-    );
+    if (this.simpleMode) {
+      tl.fromTo(stampClosed, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'none' }, slamMoment);
+    } else {
+      tl.fromTo(
+        stampClosed,
+        { scale: 1.35, rotation: -15, opacity: 0 },
+        { scale: 1, rotation: -11, opacity: 1, duration: S * 0.22, ease: 'power3.out' },
+        slamMoment
+      );
+      if (stampImpact) {
+        tl.fromTo(
+          stampImpact,
+          { scale: 0.5, opacity: 0 },
+          {
+            scale: 1.4,
+            opacity: 0.55,
+            duration: S * 0.12,
+            ease: 'power2.out',
+            immediateRender: false,
+          },
+          slamMoment
+        ).to(
+          stampImpact,
+          { scale: 2.3, opacity: 0, duration: S * 0.33, ease: 'power2.in' },
+          slamMoment + S * 0.12
+        );
+      }
+    }
 
     if (!this.simpleMode) {
       tl.to(
         folderRoot,
         {
-          x: 4,
-          y: 3,
-          duration: 0.08,
-          yoyo: true,
-          repeat: 3,
-          ease: 'none',
+          keyframes: [
+            { x: 6, y: 5, rotation: -0.95, scale: 0.992, duration: S * 0.05 },
+            { x: -5, y: -4, rotation: -1.75, scale: 1.004, duration: S * 0.07 },
+            { x: 3, y: 2, rotation: -1.2, scale: 0.998, duration: S * 0.07 },
+            { x: -1.5, y: -1, rotation: -1.45, scale: 1.001, duration: S * 0.08 },
+            { x: 0, y: 0, rotation: -1.35, scale: 1, duration: S * 0.13 },
+          ],
+          ease: 'power1.out',
         },
         slamMoment
-      ).set(folderRoot, { x: 0, y: 0 });
+      );
     }
 
-    tl.to(closedActions, { opacity: 1, y: 0, duration: w.postStampHold * 0.8 }, slamMoment + 0.15);
+    tl.to(closedActions, { opacity: 1, y: 0, duration: w.postStampHold * 0.8 }, slamMoment + S * 0.4);
     cursor += w.stampSlam + w.postStampHold;
 
     // Normalize dwell window positions into 0..1 progress
@@ -501,7 +577,11 @@ export class FolderChoreography {
     });
   }
 
-  private syncAudioAndStampEvents(progress: number, _direction: number, closedActions: HTMLElement): void {
+  private syncAudioAndStampEvents(
+    progress: number,
+    _direction: number,
+    closedActions: HTMLElement
+  ): void {
     // Play page-flip sound when cover opens or closes back down
     if (progress > 0.03 && !this.coverOpened) {
       this.coverOpened = true;
@@ -536,7 +616,11 @@ export class FolderChoreography {
 
   public scrollToAnchor(anchorId: string): boolean {
     const normalized = anchorId.replace(/^#/, '').toLowerCase();
-    const win = this.dwellWindows.find((d) => d.id.startsWith(normalized));
+    const win =
+      this.dwellWindows.find((d) => d.id === normalized) ??
+      (normalized === 'projects'
+        ? this.dwellWindows.find((d) => d.id === 'projects' || d.id.startsWith('projects-'))
+        : undefined);
     if (!win) return false;
     this.scrollToProgress(win.targetProg);
     return true;
@@ -561,6 +645,51 @@ export class FolderChoreography {
       });
     } else {
       window.scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }
+
+  /**
+   * Keeps the outer choreography in charge of the wheel: the inner page only
+   * consumes it when its content truly overflows and the pointer is not at a
+   * scroll edge; otherwise the event propagates to the window (Lenis) scroller.
+   */
+  private bindPageWheelScroll(): void {
+    for (const pageEl of this.pageEls) {
+      pageEl.addEventListener(
+        'wheel',
+        (e) => {
+          const overflow = pageEl.scrollHeight - pageEl.clientHeight;
+          const atTop = pageEl.scrollTop <= 0;
+          // Sub-pixel clamping can leave scrollTop a couple px short of the integer
+          // overflow, so a 1px threshold would never register "at bottom" and would
+          // trap the wheel instead of forwarding it to the outer scroller.
+          const atBottom = pageEl.scrollTop >= overflow - 2;
+          const down = e.deltaY > 0;
+          const innerCanScroll = overflow > 1 && !(down ? atBottom : atTop);
+          if (innerCanScroll) {
+            e.stopPropagation();
+          } else {
+            e.preventDefault();
+          }
+        },
+        { passive: false }
+      );
+    }
+  }
+
+  private queueProgressSave(progress: number): void {
+    this.pendingProgress = progress;
+    const now = performance.now();
+    if (now - this.lastProgressSaveAt < 1000) return;
+    this.lastProgressSaveAt = now;
+    this.saveProgress();
+  }
+
+  private saveProgress(): void {
+    try {
+      sessionStorage.setItem(PROGRESS_STORAGE_KEY, this.pendingProgress.toFixed(4));
+    } catch {
+      // Ignore storage quota errors
     }
   }
 

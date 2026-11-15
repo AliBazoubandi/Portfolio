@@ -1,5 +1,6 @@
 import { CONTENT } from '../content';
 import { renderCheckboxIcon } from '../svg/assets';
+import { esc } from '../escape';
 
 export function renderSkillsPage(): string {
   let globalIdx = 0;
@@ -11,7 +12,7 @@ export function renderSkillsPage(): string {
           return `
             <div class="cb-row skill-cb-row ${item.checked ? 'is-pending' : ''}" data-skill-idx="${idx}">
               ${renderCheckboxIcon(item.checked)}
-              <span>${item.name}</span>
+              <span>${esc(item.name)}</span>
             </div>
           `;
         })
@@ -19,7 +20,7 @@ export function renderSkillsPage(): string {
 
       return `
         <div class="skill-group-card">
-          <h3 class="subsection-label">${group.category}</h3>
+          <h3 class="subsection-label">${esc(group.category)}</h3>
           <div class="skill-cb-list">${itemsHtml}</div>
         </div>
       `;
@@ -47,4 +48,3 @@ export function animateSkillCheckboxes(pageEl: HTMLElement): void {
     }, i * 35);
   });
 }
-
